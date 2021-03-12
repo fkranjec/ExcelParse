@@ -448,7 +448,9 @@ function App() {
         TRENUTNO_ZANIMANJE_ID: excel[osoba_index+"TRENUTNO_ZANIMANJE_ID"]===undefined?null:parseInt(excel[osoba_index+"TRENUTNO_ZANIMANJE_ID"].split(" ")[0]),
         PODJELA_ZANIMANJA_ID: excel[osoba_index+"PODJELA_ZANIMANJA_ID"]===undefined?null:(excel[osoba_index+"PODJELA_ZANIMANJA_ID2"]==="7 Ostalo"?excel[osoba_index+"PODJELA_ZANIMANJA_ID2"].substring(2):excel[osoba_index+"PODJELA_ZANIMANJA_ID"].substring(2)),
         PRIJAVLJEN_HZZO_ID: excel[osoba_index+"PRIJAVLJEN_HZZO_ID"]===undefined?null:parseInt(excel[osoba_index+"PRIJAVLJEN_HZZO_ID"].split(" ")[0]),
-        PRIJAVLJEN_HZZO_RAZLOG_ID: excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"]===undefined?null:(excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"]==="9 Bez odgovora"?-2:parseInt(excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"].split(" ")[0]))
+        PRIJAVLJEN_HZZO_RAZLOG_ID: excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"]===undefined?null:(excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"]==="9 Bez odgovora"?-2:parseInt(excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"].split(" ")[0])),
+        UZDRZAVANE_OSOBE:null,
+        
       }
       pkzArr.push(pkzObj);
     }
