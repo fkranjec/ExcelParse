@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import XLSX from 'xlsx';
+import axios from 'axios';
 
 function App() {
 
@@ -107,7 +108,7 @@ function App() {
   PREZIME_ZRTVE:string | null,
   OIB:number | null,
   SPOL:number | null,
-  DATUM_RODENJA:string | null,
+  DATUM_RODENJA:Date | null,
   NASELJE_RODENJA:number | null,
   ZUPANIJA_RODENJA:number | null,
   DRZAVA_RODENJA:string | null,
@@ -215,8 +216,6 @@ function App() {
   OBITELJ_DRUGA_PRAVA_RAZLOG:string | null
   }
 
-  var objektAnketa :anketa;
-
   const selectFile = (e:any) => {
     selectedFile=e.target.files[0]
     console.log(`FILE ${selectedFile.name} UPLOADED`)
@@ -251,8 +250,73 @@ function App() {
     }
   }
 
-  const parseData = () => {
+  const handlePkz3 = (excel:any)=>{
+    var pkzObj;
+    var pkzArr:any[] = [];
+    for (var i=0;i<10;i++)
+    {
+      if(excel["pkz3x"+(i+1)+"b"]==="")break;
+      pkzObj = {
+        IME_PREZIME: excel["pkz3x"+(i+1)+"b"],
+        GOD_RODENJA: excel["pkz3x"+(i+1)+"c"],
+        SRODSTVO: excel["pkz3x"+(i+1)+"d"].split(" ")[0]==="6"?excel["pkz3x"+(i+1)+"d_dr"]:excel["pkz3x"+(i+1)+"d"].split(" ")[1],
+        asd: null
+      }
+      pkzArr.push(pkzObj);
+    }
+  return pkzArr;
+  }
 
+  const parseData = (excel:any) => {
+    var anketaObj;
+    var prebivalisteVar:any;
+    var boravisteVar:any;
+    var posatnskiVar:any;
+    var pkz3Obj:any;
+    console.log(excel);
+    var PKZ3 = handlePkz3(excel);
+    console.log(PKZ3);
+    axios.get("http://192.168.0.180:9000/search/mjesto",{
+      params:{search_value: excel.PREBIVALISTE,}
+    }).then(res =>{
+      prebivalisteVar = res.data[0].MJESTO_ID
+      posatnskiVar = res.data[0].POSTANSKI_BROJ
+      axios.get("http://192.168.0.180:9000/search/mjesto",{
+        params:{search_value: excel.BORAVISTE,}
+        }).then(res =>{
+          console.log(res.data)
+          boravisteVar = res.data[0].MJESTO_ID
+          axios.get("http://192.168.0.180:9000/search/mjesto",{
+        params:{search_value: excel.NASELJE_RODENJA.split(" ")[1],}
+      }).then(res=>{
+        anketaObj = {
+          IME_ZRTVE: excel.IME_ZRTVE===""?excel.pkz3x1b.split(" ")[0]:excel.IME_ZRTVE,
+          PREZIME_ZRTVE: excel.PREZIME_ZRTVE===""?excel.pkz3x1b.split(" ")[1]:excel.PREZIME_ZRTVE,
+          OIB: excel.OIB===""?null:parseInt(excel.OIB),
+          SPOL: parseInt(excel.SPOL),
+          DATUM_RODENJA: new Date(excel.GODINA_RODENJA,excel.MJESEC_RODENJA-1,excel.DAN_RODENJA),
+          NASELJE_RODENJA: res.data[0].MJESTO_ID,
+          ZUPANIJA_RODENJA: parseInt(excel.ZUPANIJA_RODENJA.split(" ")[0]),
+          DRZAVA_RODENJA: excel.DRZAVA_RODENJA.split(" ")[1],
+          DRZAVLJANSTVO: excel.DRZAVLJANSTVO.split(" ")[1],
+          PREBIVALISTE: prebivalisteVar,
+          BORAVISTE: boravisteVar,
+          POSTANSKI_BROJ: posatnskiVar,
+          ULICA_STANOVANJA: excel.ULICA_STANOVANJA,
+          FIKSNI: excel.FIKSNI,
+          MOBILNI: excel.MOBILNI,
+          EMAIL: excel.EMAIL,
+          BRACNO_STANJE: parseInt(excel.BRACNO_STANJE.split(" ")[0]),
+          ZUPANIJA_PREBIVALISTA: null,
+          F1_ID: parseInt(excel.F1_ID.split(" ")[0]),
+          F2_ID: excel.F2_ID===undefined?null:parseInt(excel.F2_ID.split(" ")[0]),
+        }
+        console.log(anketaObj);
+    })
+      })
+    })
+    
+    
   }
 
   return (
@@ -270,7 +334,7 @@ function App() {
       </div>
       <hr/>
       <div className="parseInput">
-        <button type="button" onClick={()=>parseData()}>PARSE</button>
+        <button type="button" onClick={()=>parseData(excel)}>PARSE</button>
       </div>
       <hr/>
       <div className="logInput">
