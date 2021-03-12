@@ -19,6 +19,7 @@ function App() {
       STRANI_JEZIK:any[],
       MS_WORD:number,
       MS_EXCEL:number,
+      MS_ACCESS:number | null,
       MS_POWERPOINT:number,
       SLUZENJE_INTERNETOM:number,
       SLUZENJE_EMAILOM:number,
@@ -301,7 +302,11 @@ function App() {
         GOD_RODENJA: excel["pkz3x"+(i+1)+"c"],
         SRODSTVO: excel["pkz3x"+(i+1)+"d"].split(" ")[0]==="6"?excel["pkz3x"+(i+1)+"d_dr"]:excel["pkz3x"+(i+1)+"d"].split(" ")[1],
         RAZINA_OBRAZOVANJA: excel[osoba_index+"RAZINA_OBRAZOVANJA"]===undefined?null:excel[osoba_index+"RAZINA_OBRAZOVANJA"].substring(2),
-        STRANI_JEZIK: straniJezik
+        STRANI_JEZIK: straniJezik,
+        MS_WORD: excel[osoba_index+"_WORD"],
+        MS_EXCEL: excel[osoba_index+"_EXCEL"],
+        MS_POWERPOINT: excel[osoba_index+"_POWERPOINT"],
+
       }
       pkzArr.push(pkzObj);
     }
