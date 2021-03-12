@@ -235,7 +235,7 @@ function App() {
           console.log("CREATING OBJECT")
           let rowObject = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
           let jsonObject = JSON.parse(JSON.stringify(rowObject))
-          excel = jsonObject[9]
+          excel = jsonObject[54]
           console.log(jsonObject)
           doneConvert = true
           console.log("OBJECT CREATED")
@@ -254,6 +254,7 @@ function App() {
     var straniJezikObj = {};
     for(var i=1;i<4;i++){
       if(excel[osoba_index+"JEZIK"+i]==="99 Bez odgovora")break;
+      if(excel[osoba_index+"JEZIK"+i]==="997 Niti jedan")break;
       if(excel[osoba_index+"JEZIK"+i]===undefined)break;
       straniJezikObj = {
         jezik: excel[osoba_index+"JEZIK"+i].split(" ")[1],
@@ -266,6 +267,90 @@ function App() {
       straniJezikArr.push(straniJezikObj);
     }
     return straniJezikArr;
+  }
+
+  const handleCertifikati = (excel:any,osoba_index:any) =>{
+    var certifikatiArr = [];
+    var certifikatiObj = {};
+    for(var i=1;i<6;i++){
+      if(excel[osoba_index+"CER"+i]==="99 Bez odgovora")break;
+      if(excel[osoba_index+"CER"+i]==="997 Niti jedan")break;
+      if(excel[osoba_index+"CER"+i]==="")break;
+      if(excel[osoba_index+"CER"+i]===undefined)break;
+      certifikatiObj = {
+        jezik: excel[osoba_index+"CER"+i]
+        
+      }
+      certifikatiArr.push(certifikatiObj);
+    }
+    return certifikatiArr;
+  }
+
+  const handleDodatneVjestine = (excel:any,osoba_index:any) =>{
+    var dodatneVjestineArr = [];
+    var dodatneVjestineObj = {};
+    for(var i=1;i<6;i++){
+      if(excel[osoba_index+"VJ"+i]==="99 Bez odgovora")break;
+      if(excel[osoba_index+"VJ"+i]==="997 Niti jedan")break;
+      if(excel[osoba_index+"VJ"+i]==="")break;
+      if(excel[osoba_index+"VJ"+i]===undefined)break;
+      dodatneVjestineObj = {
+        naziv_vjestine: excel[osoba_index+"VJ"+i]
+        
+      }
+      dodatneVjestineArr.push(dodatneVjestineObj);
+    }
+    return dodatneVjestineArr;
+  }
+
+  const handleZnanje = (excel:any,osoba_index:any) =>{
+    var znanjeArr = [];
+    var znanjeObj = {};
+    for(var i=1;i<21;i++){
+      if(excel[osoba_index+"ZNANJE"+i]==="99 Bez odgovora")continue;
+      if(excel[osoba_index+"ZNANJE"+i]==="997 Niti jedan")continue;
+      if(excel[osoba_index+"ZNANJE"+i]==="")continue;
+      if(excel[osoba_index+"ZNANJE"+i]===undefined)continue;
+      if(i===20)break;
+      znanjeObj = {
+        naziv_znanja: parseInt(excel[osoba_index+"ZNANJE"+i].split(" ")[0]) === 18? excel[osoba_index+"ZNANJE20"]:excel[osoba_index+"ZNANJE"+i].substring(2)        
+      }
+
+      znanjeArr.push(znanjeObj);
+    }
+    return znanjeArr;
+  }
+
+  const handlePoslodavci = (excel:any,osoba_index:any) =>{
+    var poslodavciArr = [];
+    var poslodavciObj = {};
+    
+      if(excel[osoba_index+"POSLODAVCI"]==="99 Bez odgovora")return;
+      if(excel[osoba_index+"POSLODAVCI"]==="997 Niti jedan")return;
+      if(excel[osoba_index+"POSLODAVCI"]==="")return;
+      if(excel[osoba_index+"POSLODAVCI"]===undefined)return;
+      poslodavciObj = {
+        naziv_poslodavca: excel[osoba_index+"POSLODAVCI"]      
+      }
+
+      poslodavciArr.push(poslodavciObj);
+    
+    return poslodavciArr;
+  }
+
+  const handleDodatneRacunalne = (excel:any,osoba_index:any) =>{
+    var dodatneRacunalneArr = [];
+    var dodatneRacunalneObj = {};
+    for(var i=1;i<4;i++){
+      if(excel[osoba_index+"DOD"+i]==="")break;
+      dodatneRacunalneObj = {
+        naziv_vjestine: excel[osoba_index+"DOD"+i],
+        id_odgovor: parseInt(excel[osoba_index+"DOD_ODG_"+i].split(" ")[0]),
+        
+      }
+      dodatneRacunalneArr.push(dodatneRacunalneObj);
+    }
+    return dodatneRacunalneArr;
   }
 
   const handlePkz3 = (excel:any)=>{
@@ -295,12 +380,22 @@ function App() {
       }
       if(excel["pkz3x"+(i+1)+"b"]==="")break;
       var straniJezik = handleStraniJezik(excel,osoba_index);
+      var dodatneRacunalne = handleDodatneRacunalne(excel,osoba_index);
+      var certifikati = handleCertifikati(excel,osoba_index);
+      var dodatneVjestine = handleDodatneVjestine(excel,osoba_index);
+      var znanje = handleZnanje(excel,osoba_index);
+      var poslodavci = handlePoslodavci(excel,osoba_index);
       pkzObj = {
         IME_PREZIME: excel["pkz3x"+(i+1)+"b"],
         GOD_RODENJA: excel["pkz3x"+(i+1)+"c"],
         SRODSTVO: excel["pkz3x"+(i+1)+"d"].split(" ")[0]==="6"?excel["pkz3x"+(i+1)+"d_dr"]:excel["pkz3x"+(i+1)+"d"].split(" ")[1],
         RAZINA_OBRAZOVANJA: excel[osoba_index+"RAZINA_OBRAZOVANJA"]===undefined?null:excel[osoba_index+"RAZINA_OBRAZOVANJA"].substring(2),
-        STRANI_JEZIK: straniJezik
+        STRANI_JEZIK: straniJezik,
+        DODATNE_RACUNALNE : dodatneRacunalne,
+        CERTIFIKATI: certifikati,
+        DODATNE_VJESTINE: dodatneVjestine,
+        ZNANJE:znanje,
+        POSLODAVCI:poslodavci
       }
       pkzArr.push(pkzObj);
     }
@@ -319,13 +414,13 @@ function App() {
     axios.get("http://192.168.0.180:9000/search/mjesto",{
       params:{search_value: excel.PREBIVALISTE,}
     }).then(res =>{
-      prebivalisteVar = res.data[0].MJESTO_ID
-      posatnskiVar = res.data[0].POSTANSKI_BROJ
+      prebivalisteVar = res.data[0]===undefined?null:res.data[0].MJESTO_ID;
+      posatnskiVar = res.data[0] === undefined?null:res.data[0].POSTANSKI_BROJ
       axios.get("http://192.168.0.180:9000/search/mjesto",{
         params:{search_value: excel.BORAVISTE,}
         }).then(res =>{
           console.log(res.data)
-          boravisteVar = res.data[0].MJESTO_ID
+          boravisteVar = res.data[0]===undefined?null:res.data[0].MJESTO_ID;
           axios.get("http://192.168.0.180:9000/search/mjesto",{
         params:{search_value: excel.NASELJE_RODENJA.split(" ")[1],}
       }).then(res=>{
