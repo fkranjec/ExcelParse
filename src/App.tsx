@@ -255,12 +255,34 @@ function App() {
     var pkzArr:any[] = [];
     for (var i=0;i<10;i++)
     {
+      var osoba_index;
+      if(i+1===parseInt(excel.INDEX0)){
+        osoba_index="O0_"
+      }
+      else if(i+1===parseInt(excel.INDEX1)){
+        osoba_index="O1_"
+      }
+      else if(i+1===excel.INDEX2){
+        osoba_index="O2_"
+      }
+      else if(i+1===excel.INDEX3){
+        osoba_index="O3_"
+      }
+      else if(i+1===excel.INDEX4){
+        osoba_index="O4_"
+      }
+      if(excel.F1_ID.split(" ")[0]==="1" && i===0)
+      { 
+        osoba_index="S_"
+      }
       if(excel["pkz3x"+(i+1)+"b"]==="")break;
+      var straniJezik
       pkzObj = {
         IME_PREZIME: excel["pkz3x"+(i+1)+"b"],
         GOD_RODENJA: excel["pkz3x"+(i+1)+"c"],
         SRODSTVO: excel["pkz3x"+(i+1)+"d"].split(" ")[0]==="6"?excel["pkz3x"+(i+1)+"d_dr"]:excel["pkz3x"+(i+1)+"d"].split(" ")[1],
-        asd: null
+        RAZINA_OBRAZOVANJA: excel[osoba_index+"RAZINA_OBRAZOVANJA"].substring(2),
+
       }
       pkzArr.push(pkzObj);
     }
