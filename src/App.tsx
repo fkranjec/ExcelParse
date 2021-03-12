@@ -235,7 +235,7 @@ function App() {
           console.log("CREATING OBJECT")
           let rowObject = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
           let jsonObject = JSON.parse(JSON.stringify(rowObject))
-          excel = jsonObject[0]
+          excel = jsonObject[9]
           console.log(jsonObject)
           doneConvert = true
           console.log("OBJECT CREATED")
@@ -247,6 +247,25 @@ function App() {
     {
       console.log("NO DATA")
     }
+  }
+
+  const handleStraniJezik = (excel:any,osoba_index:any) =>{
+    var straniJezikArr = [];
+    var straniJezikObj = {};
+    for(var i=1;i<4;i++){
+      if(excel[osoba_index+"JEZIK"+i]==="99 Bez odgovora")break;
+      if(excel[osoba_index+"JEZIK"+i]===undefined)break;
+      straniJezikObj = {
+        jezik: excel[osoba_index+"JEZIK"+i].split(" ")[1],
+        slusanje: parseInt(excel[osoba_index+"JEZIK"+i+"_SLUSANJE"].split(" ")[0]),
+        citanje: parseInt(excel[osoba_index+"JEZIK"+i+"_CITANJE"].split(" ")[0]),
+        govorna_produkcija: parseInt(excel[osoba_index+"JEZIK"+i+"_GOVORNA_PRODUKCIJA"].split(" ")[0]),
+        govorna_interakcija: parseInt(excel[osoba_index+"JEZIK"+i+"_GOVORNA_PRODUKCIJA"].split(" ")[0]),
+        pisanje: parseInt(excel[osoba_index+"JEZIK"+i+"_PISANJE"].split(" ")[0]),
+      }
+      straniJezikArr.push(straniJezikObj);
+    }
+    return straniJezikArr;
   }
 
   const handlePkz3 = (excel:any)=>{
@@ -275,13 +294,13 @@ function App() {
         osoba_index="S_"
       }
       if(excel["pkz3x"+(i+1)+"b"]==="")break;
-      var straniJezik
+      var straniJezik = handleStraniJezik(excel,osoba_index);
       pkzObj = {
         IME_PREZIME: excel["pkz3x"+(i+1)+"b"],
         GOD_RODENJA: excel["pkz3x"+(i+1)+"c"],
         SRODSTVO: excel["pkz3x"+(i+1)+"d"].split(" ")[0]==="6"?excel["pkz3x"+(i+1)+"d_dr"]:excel["pkz3x"+(i+1)+"d"].split(" ")[1],
-        RAZINA_OBRAZOVANJA: excel[osoba_index+"RAZINA_OBRAZOVANJA"].substring(2),
-
+        RAZINA_OBRAZOVANJA: excel[osoba_index+"RAZINA_OBRAZOVANJA"]===undefined?null:excel[osoba_index+"RAZINA_OBRAZOVANJA"].substring(2),
+        STRANI_JEZIK: straniJezik
       }
       pkzArr.push(pkzObj);
     }
