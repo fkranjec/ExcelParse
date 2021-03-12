@@ -236,7 +236,7 @@ function App() {
           console.log("CREATING OBJECT")
           let rowObject = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
           let jsonObject = JSON.parse(JSON.stringify(rowObject))
-          excel = jsonObject[9]
+          excel = jsonObject[0]
           console.log(jsonObject)
           doneConvert = true
           console.log("OBJECT CREATED")
@@ -287,9 +287,6 @@ function App() {
       else if(i+1===excel.INDEX3){
         osoba_index="O3_"
       }
-      else if(i+1===excel.INDEX4){
-        osoba_index="O4_"
-      }
       if(excel.F1_ID.split(" ")[0]==="1" && i===0)
       { 
         osoba_index="S_"
@@ -302,12 +299,61 @@ function App() {
         SRODSTVO: excel["pkz3x"+(i+1)+"d"].split(" ")[0]==="6"?excel["pkz3x"+(i+1)+"d_dr"]:excel["pkz3x"+(i+1)+"d"].split(" ")[1],
         RAZINA_OBRAZOVANJA: excel[osoba_index+"RAZINA_OBRAZOVANJA"]===undefined?null:excel[osoba_index+"RAZINA_OBRAZOVANJA"].substring(2),
         STRANI_JEZIK: straniJezik,
-        MS_WORD: parseInt(excel[osoba_index+"_WORD"]),
-        MS_EXCEL: parseInt(excel[osoba_index+"_EXCEL"]),
-        MS_POWERPOINT: parseInt(excel[osoba_index+"_POWERPOINT"]),
-        MS_ACCESS: parseInt(excel[osoba_index+"_ACCESS"]),
-        SLUZENJE_INTERNETOM: parseInt(excel[osoba_index+"_INTERNET"]),
-        SLUZENJE_EMAILOM: parseInt(excel[osoba_index+"_EMAIL"])
+        MS_WORD: excel[osoba_index+"WORD"]===undefined?null:parseInt(excel[osoba_index+"WORD"].split(" ")[0]),
+        MS_EXCEL: excel[osoba_index+"EXCEL"]===undefined?null:parseInt(excel[osoba_index+"EXCEL"].split(" ")[0]),
+        MS_POWERPOINT: excel[osoba_index+"POWERPOINT"]===undefined?null:parseInt(excel[osoba_index+"POWERPOINT"].split(" ")[0]),
+        MS_ACCESS: excel[osoba_index+"ACCESS"]===undefined?null:parseInt(excel[osoba_index+"ACCESS"].split(" ")[0]),
+        SLUZENJE_INTERNETOM: excel[osoba_index+"INTERNET"]===undefined?null:parseInt(excel[osoba_index+"INTERNET"].split(" ")[0]),
+        SLUZENJE_EMAILOM: excel[osoba_index+"EMAIL"]===undefined?null:parseInt(excel[osoba_index+"EMAIL"].split(" ")[0]),
+        VOZACKI: excel[osoba_index+"VOZACKI1"]===undefined?(excel[osoba_index+"VOZACKI2"]===undefined?null:parseInt(excel[osoba_index+"VOZACKI2"].split(" ")[0])):parseInt(excel[osoba_index+"VOZACKI1"].split(" ")[0]),
+        KRONICNA_BOLEST: osoba_index==="S_"?null:excel[osoba_index+"KRONICNA_BOLEST"].substring(2),
+        WHO1: excel[osoba_index+"WHO1"]===undefined?null:parseInt(excel[osoba_index+"WHO1"].split(" ")[0]),
+        WHO2: excel[osoba_index+"WHO2"]===undefined?null:parseInt(excel[osoba_index+"WHO2"].split(" ")[0]),
+        WHO3: excel[osoba_index+"WHO3"]===undefined?null:parseInt(excel[osoba_index+"WHO3"].split(" ")[0]),
+        WHO4: excel[osoba_index+"WHO4"]===undefined?null:parseInt(excel[osoba_index+"WHO4"].split(" ")[0]),
+        WHO5: excel[osoba_index+"WHO5"]===undefined?null:parseInt(excel[osoba_index+"WHO5"].split(" ")[0]),
+        WHO6: excel[osoba_index+"WHO6"]===undefined?null:parseInt(excel[osoba_index+"WHO6"].split(" ")[0]),
+        WHO7: excel[osoba_index+"WHO7"]===undefined?null:parseInt(excel[osoba_index+"WHO7"].split(" ")[0]),
+        WHO8: excel[osoba_index+"WHO8"]===undefined?null:parseInt(excel[osoba_index+"WHO8"].split(" ")[0]),
+        WHO9: excel[osoba_index+"WHO9"]===undefined?null:parseInt(excel[osoba_index+"WHO9"].split(" ")[0]),
+        WHO10: excel[osoba_index+"WHO10"]===undefined?null:parseInt(excel[osoba_index+"WHO10"].split(" ")[0]),
+        WHO11: excel[osoba_index+"WHO11"]===undefined?null:parseInt(excel[osoba_index+"WHO11"].split(" ")[0]),
+        WHO12: excel[osoba_index+"WHO12"]===undefined?null:parseInt(excel[osoba_index+"WHO12"].split(" ")[0]),
+        WHO_2: excel[osoba_index+"WHO_2"]===undefined?null:parseInt(excel[osoba_index+"WHO_2"]),
+        WHO_3: excel[osoba_index+"WHO_3"]===undefined?null:parseInt(excel[osoba_index+"WHO_3"]),
+        WHO_4: excel[osoba_index+"WHO_4"]===undefined?null:parseInt(excel[osoba_index+"WHO_4"]),
+        DASS21_1: excel[osoba_index+"DASS1"]===undefined?null:parseInt(excel[osoba_index+"DASS1"].split(" ")[0]),
+        DASS21_2: excel[osoba_index+"DASS2"]===undefined?null:parseInt(excel[osoba_index+"DASS2"].split(" ")[0]),
+        DASS21_3: excel[osoba_index+"DASS3"]===undefined?null:parseInt(excel[osoba_index+"DASS3"].split(" ")[0]),
+        DASS21_4: excel[osoba_index+"DASS4"]===undefined?null:parseInt(excel[osoba_index+"DASS4"].split(" ")[0]),
+        DASS21_5: excel[osoba_index+"DASS5"]===undefined?null:parseInt(excel[osoba_index+"DASS5"].split(" ")[0]),
+        DASS21_6: excel[osoba_index+"DASS6"]===undefined?null:parseInt(excel[osoba_index+"DASS6"].split(" ")[0]),
+        DASS21_7: excel[osoba_index+"DASS7"]===undefined?null:parseInt(excel[osoba_index+"DASS7"].split(" ")[0]),
+        DASS21_8: excel[osoba_index+"DASS8"]===undefined?null:parseInt(excel[osoba_index+"DASS8"].split(" ")[0]),
+        DASS21_9: excel[osoba_index+"DASS9"]===undefined?null:parseInt(excel[osoba_index+"DASS9"].split(" ")[0]),
+        DASS21_10: excel[osoba_index+"DASS10"]===undefined?null:parseInt(excel[osoba_index+"DASS10"].split(" ")[0]),
+        DASS21_11: excel[osoba_index+"DASS11"]===undefined?null:parseInt(excel[osoba_index+"DASS11"].split(" ")[0]),
+        DASS21_12: excel[osoba_index+"DASS12"]===undefined?null:parseInt(excel[osoba_index+"DASS12"].split(" ")[0]),
+        DASS21_13: excel[osoba_index+"DASS13"]===undefined?null:parseInt(excel[osoba_index+"DASS13"].split(" ")[0]),
+        DASS21_14: excel[osoba_index+"DASS14"]===undefined?null:parseInt(excel[osoba_index+"DASS14"].split(" ")[0]),
+        DASS21_15: excel[osoba_index+"DASS15"]===undefined?null:parseInt(excel[osoba_index+"DASS15"].split(" ")[0]),
+        DASS21_16: excel[osoba_index+"DASS16"]===undefined?null:parseInt(excel[osoba_index+"DASS16"].split(" ")[0]),
+        DASS21_17: excel[osoba_index+"DASS17"]===undefined?null:parseInt(excel[osoba_index+"DASS17"].split(" ")[0]),
+        DASS21_18: excel[osoba_index+"DASS18"]===undefined?null:parseInt(excel[osoba_index+"DASS18"].split(" ")[0]),
+        DASS21_19: excel[osoba_index+"DASS19"]===undefined?null:parseInt(excel[osoba_index+"DASS19"].split(" ")[0]),
+        DASS21_20: excel[osoba_index+"DASS20"]===undefined?null:parseInt(excel[osoba_index+"DASS20"].split(" ")[0]),
+        DASS21_21: excel[osoba_index+"DASS21"]===undefined?null:parseInt(excel[osoba_index+"DASS21"].split(" ")[0]),
+        STR1: excel[osoba_index+"STR1"]===undefined?null:parseInt(excel[osoba_index+"STR1"]),
+        STR2_1: excel[osoba_index+"STR2_1"]===undefined?null:parseInt(excel[osoba_index+"STR2_1"].split(" ")[0]),
+        STR2_2: excel[osoba_index+"STR2_2"]===undefined?null:parseInt(excel[osoba_index+"STR2_2"].split(" ")[0]),
+        STR2_3: excel[osoba_index+"STR2_3"]===undefined?null:parseInt(excel[osoba_index+"STR2_3"].split(" ")[0]),
+        STR2_4: excel[osoba_index+"STR2_4"]===undefined?null:parseInt(excel[osoba_index+"STR2_4"].split(" ")[0]),
+        STR2_5: excel[osoba_index+"STR2_5"]===undefined?null:parseInt(excel[osoba_index+"STR2_5"].split(" ")[0]),
+        TRENUTNI_RADNI_STATUS_ID: excel[osoba_index+"TRENUTNI_RADNI_STATUS_ID"]===undefined?null:parseInt(excel[osoba_index+"TRENUTNI_RADNI_STATUS_ID"].split(" ")[0]),
+        TRENUTNO_ZANIMANJE_ID: excel[osoba_index+"TRENUTNO_ZANIMANJE_ID"]===undefined?null:parseInt(excel[osoba_index+"TRENUTNO_ZANIMANJE_ID"].split(" ")[0]),
+        PODJELA_ZANIMANJA_ID: excel[osoba_index+"PODJELA_ZANIMANJA_ID"]===undefined?null:(excel[osoba_index+"PODJELA_ZANIMANJA_ID2"]==="7 Ostalo"?excel[osoba_index+"PODJELA_ZANIMANJA_ID2"].substring(2):excel[osoba_index+"PODJELA_ZANIMANJA_ID"].substring(2)),
+        PRIJAVLJEN_HZZO_ID: excel[osoba_index+"PRIJAVLJEN_HZZO_ID"]===undefined?null:parseInt(excel[osoba_index+"PRIJAVLJEN_HZZO_ID"].split(" ")[0]),
+        PRIJAVLJEN_HZZO_RAZLOG_ID: excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"]===undefined?null:(excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"]==="9 Bez odgovora"?-2:parseInt(excel[osoba_index+"PRIJAVLJEN_HZZO_RAZLOG_ID"].split(" ")[0]))
       }
       pkzArr.push(pkzObj);
     }
