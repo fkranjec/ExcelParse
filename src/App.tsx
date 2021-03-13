@@ -326,10 +326,10 @@ function App() {
     var poslodavciArr = [];
     var poslodavciObj = {};
     
-      if(excel[osoba_index+"POSLODAVCI"]==="99 Bez odgovora")return;
-      if(excel[osoba_index+"POSLODAVCI"]==="997 Niti jedan")return;
-      if(excel[osoba_index+"POSLODAVCI"]==="")return;
-      if(excel[osoba_index+"POSLODAVCI"]===undefined)return;
+      if(excel[osoba_index+"POSLODAVCI"]==="99 Bez odgovora")return [];
+      if(excel[osoba_index+"POSLODAVCI"]==="997 Niti jedan")return [];
+      if(excel[osoba_index+"POSLODAVCI"]==="")return [];
+      if(excel[osoba_index+"POSLODAVCI"]===undefined)return [];
       poslodavciObj = {
         naziv_poslodavca: excel[osoba_index+"POSLODAVCI"]      
       }
