@@ -631,8 +631,11 @@ function App() {
           ZUPANIJA_PREBIVALISTA: null,
           F1_ID: parseInt(excel.F1_ID.split(" ")[0]),
           F2_ID: excel.F2_ID===undefined?null:parseInt(excel.F2_ID.split(" ")[0]),
-          // GOD_RODJENJA_ISPUNJAVA: excel.GOD_RODENJA_ISPUNJAVA
-          // srodstvo_id
+
+          IME_PREZIME_ISPUNJAVA: parseInt(excel.F1_ID.split(" ")[0])===1?PKZ3[0].IME_PREZIME:PKZ3[parseInt(excel.INDEX_ISPUNJAVA)-1].IME_PREZIME,
+          GOD_RODENJA_ISPUNJAVA: parseInt(excel.F1_ID.split(" ")[0])===1?PKZ3[0].GOD_RODENJA:PKZ3[parseInt(excel.INDEX_ISPUNJAVA)-1].GOD_RODENJA,
+          SRODSTVO_ID: parseInt(excel.F1_ID.split(" ")[0])===1?PKZ3[0].SRODSTVO:PKZ3[parseInt(excel.INDEX_ISPUNJAVA)-1].SRODSTVO,
+          
           BROJ_OSOBA_U_KUCANSTVU: excel.BROJ_OSOBA_U_KUCANSTVU,
           POSTOJE_UZDRZAVANE_OSOBE: excel.POSTOJE_UZDRZAVANE_OSOBE===undefined?null:parseInt(excel.POSTOJE_UZDRZAVANE_OSOBE.split(" ")[0]),
           BROJ_UZDRZAVANIH_OSOBA: excel.BROJ_UZDRZAVANIH_OSOBA===undefined?null:parseInt(excel.BROJ_UZDRZAVANIH_OSOBA),
