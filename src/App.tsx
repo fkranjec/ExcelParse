@@ -322,6 +322,26 @@ function App() {
     return znanjeArr;
   }
 
+  const handleUzdrzavaneOsobe = (excel:any,osoba_index:any) =>{
+    var uzdrzavaneOsobeArr = [];
+    var uzdrzavaneOsobeObj = {};
+    for(var i=1;i<21;i++){
+      if(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"+i]==="99 Bez odgovora")continue;
+      if(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"+i]==="997 Niti jedan")continue;
+      if(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"+i]==="")break;
+      if(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"+i]==="2 Ne")break;
+      if(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"+i]===undefined)break;
+      if(i===20)break;
+      uzdrzavaneOsobeObj = {
+        srodstvo:"aaa",
+        iznos:1234       
+      }
+
+      uzdrzavaneOsobeArr.push(uzdrzavaneOsobeObj);
+    }
+    return uzdrzavaneOsobeArr;
+  }
+
   const handlePoslodavci = (excel:any,osoba_index:any) =>{
     var poslodavciArr = [];
     var poslodavciObj = {};
@@ -359,7 +379,7 @@ function App() {
     var razlog = null;
     for(var i=1;i<=6;i++){
       if(excel[osoba_index+"RAZLOG_NEOBRACANJA_POSLODAVCU_ID"+i]!==undefined){
-        razlog = i==6?-2:parseInt(excel[osoba_index+"RAZLOG_NEOBRACANJA_POSLODAVCU_ID"+i].split(" ")[0])
+        razlog = i===6?-2:parseInt(excel[osoba_index+"RAZLOG_NEOBRACANJA_POSLODAVCU_ID"+i].split(" ")[0])
         break;
       }
     }
@@ -370,7 +390,7 @@ function App() {
     var razlog = null;
     for(var i=1;i<=7;i++){
       if(excel[osoba_index+"NEZAINTERESIRAN_PREKVALIFIKACIJA_ID"+i]!==undefined){
-        razlog = i==5?excel[osoba_index+"NEZAINTERESIRAN_PREKVALIFIKACIJA_ID7"]:excel[osoba_index+"NEZAINTERESIRAN_PREKVALIFIKACIJA_ID"+i].substring(2)
+        razlog = i===5?excel[osoba_index+"NEZAINTERESIRAN_PREKVALIFIKACIJA_ID7"]:excel[osoba_index+"NEZAINTERESIRAN_PREKVALIFIKACIJA_ID"+i].substring(2)
         break;
       }
     }
@@ -408,6 +428,7 @@ function App() {
       var poslodavci = handlePoslodavci(excel,osoba_index);
       var razlogNeobracanjaPoslodavcu = handleRazlogNeobracanjaPoslodavcu(excel,osoba_index);
       var nezainteresiranPrekvalifikacija = handleNezainteresiranPrekvalifikacija(excel,osoba_index);
+      var uzdrzavaneOsobe = handleUzdrzavaneOsobe(excel,osoba_index);
       pkzObj = {
         IME_PREZIME: excel["pkz3x"+(i+1)+"b"],
         GOD_RODENJA: excel["pkz3x"+(i+1)+"c"],
@@ -498,12 +519,18 @@ function App() {
         IZNOS_UZDRZAVANJA_ID: excel[osoba_index+"IZNOS_UZDRZAVANJA_ID"]===undefined?null:(excel[osoba_index+"IZNOS_UZDRZAVANJA_ID"].split(" ")[0]==="9"?-2:parseInt(excel[osoba_index+"IZNOS_UZDRZAVANJA_ID"].split(" ")[0])),
         DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID: excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"]===undefined?null:(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"].split(" ")[0]==="8"?-1:(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"].split(" ")[0]==="9"?-2:parseInt(excel[osoba_index+"DOZIVOTNO_UZDRZAVANJE_DAVATELJ_ID"].split(" ")[0]))),
         BROJ_OSOBA_UZDRZAVATE: excel[osoba_index+"BROJ_OSOBA_UZDRZAVATE"]===undefined?null:parseInt(excel[osoba_index+"BROJ_OSOBA_UZDRZAVATE"]),
-        UZDRZAVANE_OSOBE:null 
+        UZDRZAVANE_OSOBE:uzdrzavaneOsobe
       }
       pkzArr.push(pkzObj);
     }
   return pkzArr;
   }
+
+  // const insertData = () => {
+  //   axios.post("",{
+  //     anketa:anketaObj[]
+  //   })
+  // }
 
   const parseData = (excel:any) => {
     var anketaObj;
@@ -568,7 +595,7 @@ function App() {
           ZDRAVSTVENO_STANJE_PROMJENE_ID: excel.ZDRAVSTVENO_STANJE_PROMJENE_ID==="" || excel.ZDRAVSTVENO_STANJE_PROMJENE_ID===undefined ?null:parseInt(excel.ZDRAVSTVENO_STANJE_PROMJENE_ID.split(" ")[0]),
           ZDRAVSTVENO_STANJE_PROMJENE_OPIS: excel.ZDRAVSTVENO_STANJE_PROMJENE_OPIS===""?null:excel.ZDRAVSTVENO_STANJE_PROMJENE_OPIS,
           DIJAGNOZA_ID: excel.DIJAGNOZA_ID===""||excel.DIJAGNOZA_ID===undefined?null:excel.DIJAGNOZA_ID,
-          // VRSTA_ZANIMANJA_ID
+          VRSTA_ZANIMANJA_ID: excel.VRSTA_ZANIMANJA_ID === "" || excel.VRSTA_ZANIMANJA_ID === undefined ? null :excel.VRSTA_ZANIMANJA_ID.substring(2),
           MJESTO_STRADAVANJA_SUMNJIVO_ID:excel.MJESTO_STRADAVANJA_SUMNJIVO_ID==="" || excel.MJESTO_STRADAVANJA_SUMNJIVO_ID===undefined ?null: parseInt(excel.MJESTO_STRADAVANJA_SUMNJIVO_ID.split(" ")[0]),
           POSTUPAK_NAKNADA_STETE_ID: excel.POSTUPAK_NAKNADA_STETE_ID==="" || excel.POSTUPAK_NAKNADA_STETE_ID===undefined ?null:parseInt(excel.POSTUPAK_NAKNADA_STETE_ID.split(" ")[0]),
           POSTUPAK_NAKNADA_STETE_NACIN_ID: excel.POSTUPAK_NAKNADA_STETE_NACIN_ID==="" || excel.POSTUPAK_NAKNADA_STETE_NACIN_ID===undefined ?null:parseInt(excel.POSTUPAK_NAKNADA_STETE_NACIN_ID.split(" ")[0]),
@@ -595,8 +622,7 @@ function App() {
           RAZLOG_INVALIDSKE_MIROVINE_ID: excel.RAZLOG_INVALIDSKE_MIROVINE_ID==="" || excel.RAZLOG_INVALIDSKE_MIROVINE_ID===undefined ?null:  parseInt(excel.RAZLOG_INVALIDSKE_MIROVINE_ID.split(" ")[0]),
           IZNOS_INVALIDSKE_MIROVINE: excel.IZNOS_INVALIDSKE_MIROVINE,
           SOCIO_POTPORE_ID: excel.SOCIO_POTPORE_ID==="" || excel.SOCIO_POTPORE_ID===undefined ?null:  parseInt(excel.SOCIO_POTPORE_ID.split(" ")[0]),
-          INSTITUCIJA_POTPORA: excel.INSTITUCIJA_POTPORA===""?null:excel.INSTITUCIJA_POTPORA,
-          // INSTITUCIJA_POTPORA2 ??
+          INSTITUCIJA_POTPORA: excel.INSTITUCIJA_POTPORA==="" || excel.INSTITUCIJA_POTPORA === undefined?null:parseInt(excel.INSTITUCIJA_POTPORA.split(" ")[0]) === 1 ? excel.INSTITUCIJA_POTPORA2 : excel.INSTITUCIJA_POTPORA.substring(2),
           SOCIO_FINANCIRANO_ID: excel.SOCIO_FINANCIRANO_ID==="" || excel.SOCIO_FINANCIRANO_ID ===undefined ?null:   parseInt(excel.SOCIO_FINANCIRANO_ID.split(" ")[0]),
           SUSTAV_JAVNOG_OBRAZOVANJA: excel.SUSTAV_JAVNOG_OBRAZOVANJA===""||excel.SUSTAV_JAVNOG_OBRAZOVANJA===undefined?null:excel.SUSTAV_JAVNOG_OBRAZOVANJA,
           JAVNO_ZDRAVSTVO: excel.JAVNO_ZDRAVSTVO===""||excel.JAVNO_ZDRAVSTVO===undefined?null:excel.JAVNO_ZDRAVSTVO,
@@ -639,7 +665,8 @@ function App() {
           RAZLOG_OBITELJSKE_MIROVINE_ID: excel.RAZLOG_OBITELJSKE_MIROVINE_ID===""||excel.RAZLOG_OBITELJSKE_MIROVINE_ID===undefined?null:excel.RAZLOG_OBITELJSKE_MIROVINE_ID,
           OBITELJ_DRUGA_PRAVA_ID:excel.OBITELJ_DRUGA_PRAVA_ID==="" || excel.OBITELJ_DRUGA_PRAVA_ID ===undefined ?null:  parseInt(excel.OBITELJ_DRUGA_PRAVA_ID.split(" ")[0]),
           OBITELJ_OSTVARILA_PRAVA_ID: excel.OBITELJ_OSTVARILA_PRAVA_ID===""||excel.OBITELJ_OSTVARILA_PRAVA_ID===undefined?null:excel.OBITELJ_OSTVARILA_PRAVA_ID,
-          OBITELJ_DRUGA_PRAVA_RAZLOG: excel.OBITELJ_DRUGA_PRAVA_RAZLOG===""||excel.OBITELJ_DRUGA_PRAVA_RAZLOG===undefined?null:excel.OBITELJ_DRUGA_PRAVA_RAZLOG
+          OBITELJ_DRUGA_PRAVA_RAZLOG: excel.OBITELJ_DRUGA_PRAVA_RAZLOG===""||excel.OBITELJ_DRUGA_PRAVA_RAZLOG===undefined?null:excel.OBITELJ_DRUGA_PRAVA_RAZLOG,
+          PKZ3_PKZ4:PKZ3
         }
         console.log(anketaObj);
     })
