@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import XLSX from 'xlsx';
 import axios from 'axios';
 
 function App() {
+
+  const[naselja,setNaselja] = useState([]);
+
+  useEffect(()=>{
+    axios.get("http://192.168.0.180:9000/get/naselja")
+    .then(res =>{
+      setNaselja(res.data)
+    })
+  },[])
 
   var selectedFile :any
   var excel :any
@@ -429,6 +438,10 @@ function App() {
       var razlogNeobracanjaPoslodavcu = handleRazlogNeobracanjaPoslodavcu(excel,osoba_index);
       var nezainteresiranPrekvalifikacija = handleNezainteresiranPrekvalifikacija(excel,osoba_index);
       var uzdrzavaneOsobe = handleUzdrzavaneOsobe(excel,osoba_index);
+      var naseljeZeljeliRaditi:any = [];
+      var nazivMjestaTvrtke:any = [];
+      naseljeZeljeliRaditi = naselja.find(item => item[3]===excel[osoba_index+"NASELJE_ZELJELI_RADITI_ID"])
+      nazivMjestaTvrtke = naselja.find(item => item[3]===excel[osoba_index+"NAZIV_MJESTA_TVRTKE"])
       pkzObj = {
         IME_PREZIME: excel["pkz3x"+(i+1)+"b"],
         GOD_RODENJA: excel["pkz3x"+(i+1)+"c"],
@@ -501,13 +514,13 @@ function App() {
         ISHOD_ZADNJEG_OBRACANJA_POSLODAVCU_ID: excel[osoba_index+"ISHOD_ZADNJEG_OBRACANJA_POSLODAVCU_ID"]===undefined?null:(excel[osoba_index+"ISHOD_ZADNJEG_OBRACANJA_POSLODAVCU_ID"].split(" ")[0]==="9"?-2:parseInt(excel[osoba_index+"ISHOD_ZADNJEG_OBRACANJA_POSLODAVCU_ID"].split(" ")[0])),
         RAZLOG_NEOBRACANJA_POSLODAVCU_ID: razlogNeobracanjaPoslodavcu,
         KATEGORIJA_POSLOVA_ZELJELI_ID: excel[osoba_index+"KATEGORIJA_POSLOVA_ZELJELI_ID"]===undefined?null:(excel[osoba_index+"KATEGORIJA_POSLOVA_ZELJELI_ID"].split(" ")[0]==="8"?excel[osoba_index+"KATEGORIJA_POSLOVA_ZELJELI_ID2"]:excel[osoba_index+"KATEGORIJA_POSLOVA_ZELJELI_ID"].substring(2)),
-        ZUPANIJA_ZELJELI_RADITI_ID: null, //Vjerovatno ručno jer je nemoguće ovak
-        NASELJE_ZELJELI_RADITI_ID: null, //Treba sa axiosom 
+        ZUPANIJA_ZELJELI_RADITI_ID: excel[osoba_index+"ZUPANIJA_ZELJELI_RADITI_ID"]===undefined?null:parseInt(excel[osoba_index+"ZUPANIJA_ZELJELI_RADITI_ID"].split(" ")[0]),
+        NASELJE_ZELJELI_RADITI_ID: excel[osoba_index+"NASELJE_ZELJELI_RADITI_ID"]===undefined?null:naseljeZeljeliRaditi[0], //Treba sa axiosom 
         PREKVALIFIKACIJA_ID: excel[osoba_index+"PREKVALIFIKACIJA_ID"]===undefined?null:(excel[osoba_index+"PREKVALIFIKACIJA_ID"].split(" ")[0]==="8"?-1:(excel[osoba_index+"PREKVALIFIKACIJA_ID"].split(" ")[0]==="9"?-2:parseInt(excel[osoba_index+"PREKVALIFIKACIJA_ID"].split(" ")[0]))),
         PITANJE_5P11B_ID: null,
         NEZAINTERESIRAN_PREKVALIFIKACIJA_ID: nezainteresiranPrekvalifikacija===""?null:nezainteresiranPrekvalifikacija,
         NAZIV_TVRTKE: excel[osoba_index+"TVRTKA_NAZIV"]===undefined || excel[osoba_index+"TVRTKA_NAZIV"]===""?(excel[osoba_index+"OBRT_NAZIV"]===undefined || excel[osoba_index+"OBRT_NAZIV"]===""?null:excel[osoba_index+"OBRT_NAZIV"]):excel[osoba_index+"TVRTKA_NAZIV"],
-        NAZIV_MJESTA_TVRTKE: null, //AXIOS
+        NAZIV_MJESTA_TVRTKE: excel[osoba_index+"NAZIV_MJESTA_TVRTKE"]===undefined?null:nazivMjestaTvrtke[0], //AXIOS
         NAZIV_ULICE_TVRTKE: excel[osoba_index+"TVRTKA_ULICA"]===undefined || excel[osoba_index+"TVRTKA_ULICA"]===""?(excel[osoba_index+"OBRT_ULICA"]===undefined || excel[osoba_index+"OBRT_ULICA"]===""?null:excel[osoba_index+"OBRT_ULICA"]):excel[osoba_index+"TVRTKA_ULICA"],
         KUCNI_BROJ_TVRTKE: excel[osoba_index+"TVRTKA_KUCNI_BROJ"]===undefined || excel[osoba_index+"TVRTKA_KUCNI_BROJ"]===""?(excel[osoba_index+"OBRT_KUCNI_BROJ"]===undefined || excel[osoba_index+"OBRT_KUCNI_BROJ"]===""?null:excel[osoba_index+"OBRT_KUCNI_BROJ"]):excel[osoba_index+"TVRTKA_KUCNI_BROJ"],
         RADILI_STRUCI_ID: excel[osoba_index+"RADILI_STRUCI_ID"]===undefined?null:(excel[osoba_index+"RADILI_STRUCI_ID"].split(" ")[0]==="8"?-1:(excel[osoba_index+"RADILI_STRUCI_ID"].split(" ")[0]==="9"?-2:parseInt(excel[osoba_index+"RADILI_STRUCI_ID"].split(" ")[0]))),
@@ -541,6 +554,8 @@ function App() {
     console.log(excel);
     var PKZ3 = handlePkz3(excel);
     console.log(PKZ3);
+    var naseljeStradavanja:any = [];
+    naseljeStradavanja = naselja.find(item => item[3]===excel.NASELJE_STRADAVANJA_ID.split(" ")[1]);
     axios.get("http://192.168.0.180:9000/search/mjesto",{
       params:{search_value: excel.PREBIVALISTE,}
     }).then(res =>{
@@ -581,7 +596,7 @@ function App() {
           POSTOJE_UZDRZAVANE_OSOBE: excel.POSTOJE_UZDRZAVANE_OSOBE===undefined?null:parseInt(excel.POSTOJE_UZDRZAVANE_OSOBE.split(" ")[0]),
           BROJ_UZDRZAVANIH_OSOBA: excel.BROJ_UZDRZAVANIH_OSOBA===undefined?null:parseInt(excel.BROJ_UZDRZAVANIH_OSOBA),
           ZUPANIJA_STRADAVANJA_ID: parseInt(excel.ZUPANIJA_STRADAVANJA_ID.split(" ")[0]),
-          // NASELJE_STRADAVANJA_ID
+          NASELJE_STRADAVANJA_ID: excel.NASELJE_STRADAVANJA_ID==="" || excel.NASELJE_STRADAVANJA_ID===undefined?null:naseljeStradavanja[0],
           LOKACIJA_STRADAVANJA_ID:  excel.LOKACIJA_STRADAVANJA_ID==="" || excel.LOKACIJA_STRADAVANJA_ID===undefined ?null: excel.LOKACIJA_STRADAVANJA_ID,
           PODRUCJE_STRADAVANJA_ID: excel.PODRUCJE_STRADAVANJA_ID==="" || excel.PODRUCJE_STRADAVANJA_ID===undefined ?null: excel.PODRUCJE_STRADAVANJA_ID.substring(2),
           DAN_STRADAVANJA: excel.DAN_STRADAVANJA==="" || excel.DAN_STRADAVANJA===undefined ?null:excel.DAN_STRADAVANJA,
